@@ -19,18 +19,8 @@ jobs:
         with:
           java-version: '17'  # Change to JDK version 17 or higher
           distribution: 'temurin'
-
-      # Install specific version of Maven
-      - name: Set up Maven
-        run: |
-          mvn -version || echo "Maven not found, installing..."
-          wget https://downloads.apache.org/maven/maven-3/3.9.2/binaries/apache-maven-3.9.2-bin.zip
-          unzip apache-maven-3.9.2-bin.zip
-          sudo mv apache-maven-3.9.2 /opt/maven
-          sudo ln -s /opt/maven/bin/mvn /usr/bin/mvn
-          mvn -version  # Verify Maven installation
-
-      # Build with Maven
+      
+      # Build with Maven (will automatically use the latest Maven version)
       - name: Build with Maven
         run: mvn clean install
 
