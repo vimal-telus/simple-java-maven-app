@@ -13,19 +13,33 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
       
+      # Set up JDK (using version 17)
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
-          java-version: '11'
-          distribution: 'temurin'  
-       
+          java-version: '17'  # Change to JDK version 17 or higher
+          distribution: 'temurin'
+
+      # Install specific version of Maven
+      - name: Set up Maven
+        run: |
+          mvn -version || echo "Maven not found, installing..."
+          wget https://downloads.apache.org/maven/maven-3/3.9.2/binaries/apache-maven-3.9.2-bin.zip
+          unzip apache-maven-3.9.2-bin.zip
+          sudo mv apache-maven-3.9.2 /opt/maven
+          sudo ln -s /opt/maven/bin/mvn /usr/bin/mvn
+          mvn -version  # Verify Maven installation
+
+      # Build with Maven
+      - name: Build with Maven
+        run: mvn clean install
+
+      # Initialize CodeQL
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v2
         with:
           languages: java
 
-      - name: Build with Maven
-        run: mvn clean install
-
+      # Run CodeQL analysis
       - name: Run CodeQL analysis
-        uses: github/codeql-action/analyze@v2 
+        uses: github/codeql-action/analyze@v2
